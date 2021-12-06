@@ -24,7 +24,7 @@ module.exports = function() {
             complete();
         });
     }
-
+/*
     function getplayersGames(res, mysql, context, complete) {
         mysql.pool.query("SELECT playerID, Games.title as game FROM PlayersGames" +
             " INNER JOIN Games ON game = Games.gameID ", function (error, results, fields) {
@@ -36,7 +36,20 @@ module.exports = function() {
             complete();
         })
     }
+*/
 
+    function getplayersGames(res, mysql, context, complete) {
+        mysql.pool.query("SELECT P.gamertag AS playerID, G.title AS gameID FROM Players P, PlayersGames PG, Games G WHERE " +
+            "P.playerID = PG.playerID and PG.gameID = G.gameID", function (error, results, fields) {
+            if (error) {
+                res.write(JSON.stringify(error));
+                res.send();
+            }
+            context.playersAndGames = results;
+            complete();
+        })
+    }
+    
     router.get('/', function (req, res, next) {
         var callbackCount = 0;
         var context = {};
