@@ -1,5 +1,12 @@
 <html>
 <h3>Player's Game Libraries</h3>
+
+<form id='search_player' action='' method=''>
+    <label> Search Games Owned By Player:</label>
+    <input id='playersGamertag' type='text' name='playersGamertag' value=''>
+    <input type="button" value="Search" onclick="searchPlayerGame()">
+</form>
+
 <table>
     <thead>
     <th>Player Gamertag</th>
@@ -10,7 +17,7 @@
         <tr>
             <td>{{playerID}}</td>
             <td>{{gameID}}</td>
-            <td><button onclick="deleteEntry({{playerID}})">Delete</button></td>
+            <td><button onclick="deletePlayersGames({{playerID}},{{gameID}})">Delete</button></td>
         </tr>
     {{/each}}
     </tbody>
@@ -22,8 +29,7 @@
         <option value="{{playerID}}">{{gamerTag}}</option>
     {{/each}}
     </select><br>
-    
-    Title: <select name= "titles">
+    Title: <select name="titles">
     {{#each titles}}
         <option value="{{gameID}}">{{title}}</option>
     {{/each}}
