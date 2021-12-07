@@ -24,19 +24,21 @@ module.exports = function() {
             complete();
         });
     }
-/*
-    function getplayersGames(res, mysql, context, complete) {
-        mysql.pool.query("SELECT playerID, Games.title as game FROM PlayersGames" +
-            " INNER JOIN Games ON game = Games.gameID ", function (error, results, fields) {
-            if (error) {
+    
+    function getFromGamertag(req, res, mysql, context, complete) {
+        var query = "SELECT P.gamertag AS playerID, G.title AS gameID FROM Players P, PlayersGames PG, Games G WHERE " +
+        "P.playerID = PG.playerID and PG.gameID = G.gameID WHERE P.gamerTag LIKE " + mysql.pool.escape(req.params.s + '%');
+        console.log(query)
+
+        mysql.pool.query(query, function(error, results, fields){
+            if(error){
                 res.write(JSON.stringify(error));
-                res.send();
+                res.end();
             }
-            context.playersAndGames = results;
+            context.players = results;
             complete();
-        })
+        });
     }
-*/
 
     function getplayersGames(res, mysql, context, complete) {
         mysql.pool.query("SELECT P.gamertag AS playerID, G.title AS gameID FROM Players P, PlayersGames PG, Games G WHERE " +
@@ -81,6 +83,37 @@ module.exports = function() {
         });
     });
 
+    //search player by gamertag
+    router.get('/search/:s', function(req, res){
+        var callbackCount = 0;
+        var context = {};
+        context.jsscripts = ["deleteplayergame.js","searchplayergame.js"];
+        var mysql = req.app.get('mysql');
+        getFromGamertag(req, res, mysql, context, complete);
+        function complete(){
+            callbackCount++;
+            if(callbackCount >= 2){
+                res.render('playersGames', context);
+            }
+        }
+    });
+
+    router.delete('/:playerID', function(req, res){
+        var mysql = req.app.get('mysql');
+        var sql = "DELETE FROM PlayersGames WHERE playerID = ? AND gameID = ?";
+        var inserts = [req.params.playerID, req.params.gameID];
+        sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                console.log(error)
+                res.write(JSON.stringify(error));
+                res.status(400);
+                res.end();
+            }else{
+                res.status(202).end();
+            }
+        })
+    })    
+    
     return router;
 
 }();
