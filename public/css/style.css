@@ -64,10 +64,10 @@ tr:nth-child(even) {
     background-color: #ffffff;
 }
 
-table tr td:nth-last-child(1){
+table.p tr td:nth-last-child(1){
     border: 0;
 }
-table tr td:nth-last-child(2){
+table.p tr td:nth-last-child(2){
     border: 0;
 }
 
