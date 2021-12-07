@@ -55,6 +55,7 @@ module.exports = function() {
     router.get('/', function (req, res, next) {
         var callbackCount = 0;
         var context = {};
+        context.jsscripts = ["deleteplayer.js","searchplayergame.js"];
         var mysql = req.app.get('mysql');
         getGamerTags(res, mysql, context, complete);
         getTitles(res, mysql, context, complete);
@@ -87,7 +88,7 @@ module.exports = function() {
     router.get('/search/:s', function(req, res){
         var callbackCount = 0;
         var context = {};
-        context.jsscripts = ["deleteplayergame.js","searchplayergame.js"];
+        context.jsscripts = ["deleteplayer.js","searchplayergame.js"];
         var mysql = req.app.get('mysql');
         getFromGamertag(req, res, mysql, context, complete);
         function complete(){
@@ -98,7 +99,7 @@ module.exports = function() {
         }
     });
 
-    router.delete('/:playerID', function(req, res){
+    router.delete('/playerID/:playerID/gameID/:gameID', function(req, res){
         var mysql = req.app.get('mysql');
         var sql = "DELETE FROM PlayersGames WHERE playerID = ? AND gameID = ?";
         var inserts = [req.params.playerID, req.params.gameID];
